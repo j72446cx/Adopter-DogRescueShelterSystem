@@ -49,33 +49,6 @@ const routes: RouteRecordRaw[] = [
                 component: () => import(/* webpackChunkName: "form" */ '../views/form.vue'),
             },
             {
-                path: '/formGrooming',
-                name: 'groomingform',
-                meta: {
-                    title: 'Grooming Form',
-                    permiss: '5',
-                },
-                component: () => import(/* webpackChunkName: "form" */ '../views/formGrooming.vue'),
-            },
-            {
-                path: '/formExercise',
-                name: 'exerciseform',
-                meta: {
-                    title: 'Exercise Form',
-                    permiss: '5',
-                },
-                component: () => import(/* webpackChunkName: "form" */ '../views/formExercise.vue'),
-            },
-            {
-                path: '/formMedication',
-                name: 'medicationform',
-                meta: {
-                    title: 'Medication Form',
-                    permiss: '5',
-                },
-                component: () => import(/* webpackChunkName: "form" */ '../views/formMedication.vue'),
-            },
-            {
                 path: '/tabs',
                 name: 'tabs',
                 meta: {
@@ -84,42 +57,7 @@ const routes: RouteRecordRaw[] = [
                 },
                 component: () => import(/* webpackChunkName: "tabs" */ '../views/tabs.vue'),
             },
-            {
-                path: '/donate',
-                name: 'donate',
-                meta: {
-                    title: '鼓励作者',
-                    permiss: '14',
-                },
-                component: () => import(/* webpackChunkName: "donate" */ '../views/donate.vue'),
-            },
-            {
-                path: '/permission',
-                name: 'permission',
-                meta: {
-                    title: 'Permission Control',
-                    permiss: '13',
-                },
-                component: () => import(/* webpackChunkName: "permission" */ '../views/permission.vue'),
-            },
-            {
-                path: '/upload',
-                name: 'upload',
-                meta: {
-                    title: '上传插件',
-                    permiss: '6',
-                },
-                component: () => import(/* webpackChunkName: "upload" */ '../views/upload.vue'),
-            },
-            {
-                path: '/icon',
-                name: 'icon',
-                meta: {
-                    title: 'Icon',
-                    permiss: '10',
-                },
-                component: () => import(/* webpackChunkName: "icon" */ '../views/icon.vue'),
-            },
+
             {
                 path: '/user',
                 name: 'user',
@@ -128,42 +66,7 @@ const routes: RouteRecordRaw[] = [
                 },
                 component: () => import(/* webpackChunkName: "user" */ '../views/user.vue'),
             },
-            {
-                path: '/editor',
-                name: 'editor',
-                meta: {
-                    title: 'Editor',
-                    permiss: '8',
-                },
-                component: () => import(/* webpackChunkName: "editor" */ '../views/editor.vue'),
-            },
-            {
-                path: '/markdown',
-                name: 'markdown',
-                meta: {
-                    title: 'Editor Markdown',
-                    permiss: '9',
-                },
-                component: () => import(/* webpackChunkName: "markdown" */ '../views/markdown.vue'),
-            },
-            {
-                path: '/export',
-                name: 'export',
-                meta: {
-                    title: 'Export Excel',
-                    permiss: '2',
-                },
-                component: () => import(/* webpackChunkName: "export" */ '../views/export.vue'),
-            },
-            {
-                path: '/import',
-                name: 'import',
-                meta: {
-                    title: 'Import Excel',
-                    permiss: '2',
-                },
-                component: () => import(/* webpackChunkName: "import" */ '../views/import.vue'),
-            },
+
         ],
     },
     {

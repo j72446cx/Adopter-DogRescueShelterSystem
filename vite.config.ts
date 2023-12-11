@@ -20,7 +20,7 @@ export default defineConfig({
 		include: ['schart.js']
 	},
 	server:{
-		port: 2020,
+		port: 2021,
 		proxy:{
 			'/api': {
 				target: 'http://localhost:1010',

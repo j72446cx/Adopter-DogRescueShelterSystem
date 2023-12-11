@@ -5,20 +5,19 @@
 			<el-icon v-if="sidebar.collapse"><Expand /></el-icon>
 			<el-icon v-else><Fold /></el-icon>
 		</div>
-		<div class="logo">Working Space</div>
+		<div class="logo">Adoption System</div>
 		<div class="header-right">
 			<div class="header-user-con">
-				<!-- 消息中心 -->
-				<div class="btn-bell" @click="router.push('/tabs')">
-					<el-tooltip
-						effect="dark"
-						:content="messageStore.state.hasNewMessage ? `You have ${messageStore.state.messages.length} unread messages` : `Message Center`"
-						placement="bottom"
-					>
-						<i class="el-icon-lx-notice"></i>
-					</el-tooltip>
-					<span class="btn-bell-badge" v-if="messageStore.state.hasNewMessage"></span>
-				</div>
+        <div class="btn-bell" @click="router.push('/tabs')">
+          <el-tooltip
+              effect="dark"
+              :content="messageStore.state.hasNewMessage ? `You have ${messageStore.state.messages.length} unread messages` : `Message Center`"
+              placement="bottom"
+          >
+            <i class="el-icon-lx-notice"></i>
+          </el-tooltip>
+          <span class="btn-bell-badge" v-if="messageStore.state.hasNewMessage"></span>
+        </div>
 				<!-- 用户头像 -->
 				<el-avatar class="user-avator" :size="30" :src="imgurl" />
 				<!-- 用户名下拉菜单 -->

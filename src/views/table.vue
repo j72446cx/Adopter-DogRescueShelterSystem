@@ -1,114 +1,78 @@
 <template>
 	<div>
-		<div class="container">
-<!--			<div class="handle-box">-->
-<!--				<el-select v-model="query.address" placeholder="地址" class="handle-select mr10">-->
-<!--					<el-option key="1" label="广东省" value="广东省"></el-option>-->
-<!--					<el-option key="2" label="湖南省" value="湖南省"></el-option>-->
-<!--				</el-select>-->
-<!--				<el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>-->
-<!--				<el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>-->
-<!--				<el-button type="primary" :icon="Plus">新增</el-button>-->
-<!--			</div>-->
+    <el-row :gutter="20">
+      <el-col :span="8" v-for="(data, index) in tableData" :key="index">
+        <el-card shadow="hover" class="mgb20" style="height: 252px" v-if="data" @click="getFormDog(data.id)">
+          <div class="user-info">
+            <el-avatar :size="100" :src="data.imgURL" />
+            <div class="user-info-cont">
+              <div class="user-info-name">{{data.name}}</div>
+              <div>ID: {{data.id}}</div>
+            </div>
+          </div>
+          <div class="user-info-list">
+            Intro: {{data.intro}}
+          </div>
+        </el-card>
 
+      </el-col>
+    </el-row>
 
-			<el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-        <el-table-column prop="id" label="ID" width="60">
-        </el-table-column>
-        <el-table-column prop="name" label="Name" width="80">
-        </el-table-column>
-        <el-table-column prop="age" label="Age" width="60">
-        </el-table-column>
-        <el-table-column prop="species" label="Species" width="150">
-        </el-table-column>
-        <el-table-column prop="gender" label="Gender" width="90">
-        </el-table-column>
-        <el-table-column prop="adoptStatus" label="Adopt Status" width="120">
-        </el-table-column>
-        <el-table-column prop="entryDate" label="Entry Date" width="180">
-        </el-table-column>
-        <el-table-column prop="lastUpdateTime" formatter="" label="Latest Update" width="170">
-        </el-table-column>
-        <el-table-column label="Operation" width="180">
-          <template v-slot="scope">
-            <el-button icon="Search" circle @click="getFormDog(scope.row.id)"></el-button>
+    <div class="pagination">
+      <el-pagination
+          background
+          layout="prev, pager, next"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total="totalItems">
+      </el-pagination>
+    </div>
 
-            <el-button type="primary" icon="Edit" circle @click="getEditForm(scope.row.id)"></el-button>
-
-            <el-button type="danger" icon="Delete" circle @click="handleDelete(scope.row.id)"></el-button>
-          </template>
-
-        </el-table-column>
-
-			</el-table>
-			<div class="pagination">
-        <el-pagination
-            background
-            layout="prev, pager, next"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            :total="total">
-        </el-pagination>
-			</div>
-		</div>
-
-<!--    query dog-->
     <el-dialog title="Detailed Dog Information" v-model="this.dialogFormVisible">
       <el-form ref="form" :model="individualData" label-width="150px">
 
-        <el-form-item label="ID: ">
+        <el-form-item label="ID: " class="label-bold">
           <span>{{individualData.id}}</span>
         </el-form-item>
 
-        <el-form-item label="Name: ">
+        <el-form-item label="Name: " class="label-bold">
           <span>{{individualData.name}}</span>
 
         </el-form-item>
 
-        <el-form-item label="Age: ">
+        <el-form-item label="Age: " class="label-bold">
           <span>{{individualData.age}}</span>
         </el-form-item>
 
-        <el-form-item label="Species: ">
+        <el-form-item label="Species: " class="label-bold">
           <span>{{individualData.species}}</span>
         </el-form-item>
 
-        <el-form-item label="Gender: ">
+        <el-form-item label="Gender: " class="label-bold">
           <span>{{individualData.gender}}</span>
         </el-form-item>
 
-        <el-form-item label="Status: ">
+        <el-form-item label="Status: " class="label-bold">
           <span>{{individualData.adoptStatus}}</span>
         </el-form-item>
 
-        <el-form-item label="Introduction: ">
-          <span>{{individualData.intro}}</span>
-        </el-form-item>
-
-        <el-form-item label="Medical History: ">
+        <el-form-item label="Medical History: " class="label-bold">
           <span>{{individualData.medicalHistory}}</span>
         </el-form-item>
 
-        <el-form-item label="Image: ">
-          <template>
-            <img :src="individualData.imgURL" width="200px" height="140px">
-          </template>
-        </el-form-item>
-
-        <el-form-item label="Entry Date: ">
+        <el-form-item label="Entry Date: " class="label-bold">
           <span>{{transofmDateFormat(individualData.entryDate)}}</span>
         </el-form-item>
 
-        <el-form-item label="Last Vaccine Date: ">
+        <el-form-item label="Last Vaccine Date: " class="label-bold">
           <span>{{transofmDateFormat(individualData.lastVaccineDate)}}</span>
         </el-form-item>
 
-        <el-form-item label="Adopted Date: ">
+        <el-form-item label="Adopted Date: " class="label-bold">
           <span>{{transofmDateFormat(individualData.adoptedDate)}}</span>
         </el-form-item>
-        <el-form-item label="Lastest Update: ">
+        <el-form-item label="Lastest Update: " class="label-bold">
           <span>{{transofmDateFormat(individualData.lastUpdateTime, 1)}}</span>
         </el-form-item>
 
@@ -119,79 +83,6 @@
       </el-form>
 
     </el-dialog>
-
-<!--    edit-->
-    <el-dialog title="Dog Registration" v-model="dialogEditFormVisible">
-      <el-form ref="form" :model="individualData" label-width="150px">
-
-        <el-form-item label="ID: ">
-          <span>{{individualData.id}}</span>
-        </el-form-item>
-        <el-form-item label="Name: " style="width: 50%">
-          <el-input v-model="individualData.name" :content="infoForm.name"></el-input>
-        </el-form-item>
-
-        <el-form-item label="Age: " style="width: 30%">
-          <el-input v-model="individualData.age" :content="infoForm.age"></el-input>
-        </el-form-item>
-
-        <el-form-item label="Species: " style="width: 80%">
-          <el-input v-model="individualData.species"></el-input>
-        </el-form-item>
-
-        <el-form-item label="Gender: ">
-          <el-select v-model="individualData.gender">
-            <el-option label="Male" value="Male"></el-option>
-            <el-option label="Female" value="Female"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="Status: ">
-          <el-radio-group v-model="individualData.adoptStatus">
-            <el-radio label="Available"></el-radio>
-            <el-radio label="Reserved"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="Introduction: ">
-          <el-input type="textarea" v-model="individualData.intro" placeholder=""></el-input>
-        </el-form-item>
-
-        <el-form-item label="Medical History: ">
-          <el-input type="textarea" v-model="individualData.medicalHistory" placeholder=""></el-input>
-        </el-form-item>
-
-        <el-form-item label="Image URL: ">
-          <el-input type="textarea" v-model="individualData.imgURL" placeholder="URL"></el-input>
-        </el-form-item>
-
-        <el-form-item label="Entry Date: ">
-          <el-col :span="11">
-            <el-date-picker type="date" format="DD-MM-YYYY" value-format="YYYY-MM-DD" placeholder="Entry date(if known)" v-model="individualData.entryDate" style="width: 100%;"></el-date-picker>
-          </el-col>
-        </el-form-item>
-
-        <el-form-item label="Last Vaccine Date: ">
-          <el-col :span="11">
-            <el-date-picker type="date" format="DD-MM-YYYY" value-format="YYYY-MM-DD" placeholder="Last Vaccine date(if known)" v-model="individualData.lastVaccineDate" style="width: 100%;"></el-date-picker>
-          </el-col>
-        </el-form-item>
-
-        <el-form-item label="Adopted Date: ">
-          <el-col :span="11">
-            <el-date-picker type="date" format="DD-MM-YYYY" value-format="YYYY-MM-DD" placeholder="Adopted date(if known)" v-model="individualData.adoptedDate" style="width: 100%;"></el-date-picker>
-          </el-col>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="onSubmitEdit" >Submit</el-button>
-          <el-button type="primary" @click="dialogEditFormVisible = false">Cancel</el-button>
-        </el-form-item>
-
-      </el-form>
-
-    </el-dialog>
-		<!-- 编辑弹出框 -->
 	</div>
 </template>
 
@@ -206,87 +97,22 @@ export default{
     return {
       tableData : [],
       individualData : [],
-      searchForm : {
-        id:'',
-        gender:'',
-        adoptStatus:''
-      },
-      dialogFormVisible: false,
-      dialogEditFormVisible : false,
-      dialogAddFormVisible: false,
-      infoForm : {
-        id:'',
-        name:'',
-        age:'',
-        imgURL:'',
-        species:'',
-        adoptStatus:'',
-        medicalHistory:'',
-        intro:'',
-        gender:'',
-        entryDate:'',
-        lastVaccineDate:'',
-        lastUpdateTime:'',
-        adoptedDate:''
-      },
       currentPage : 1,
-      pageSize : 5,
-      total:1000
+      pageSize : 6,
+      totalCardsDisplay: 6,
+      searchForm: {
+        adoptStatus: "Available"
+      },
+      totalItems : 0,
+      dialogFormVisible: false
     }
   },
   methods: {
-    onSubmitSearch: function (){
-      this.searchForm =  this.transformEntryDate(this.searchForm)
-      this.fetchDogs()
-      alert("Searching "+ JSON.stringify(this.searchForm))
-    },
 
-    onSubmitAdd: function (){
-      alert("Adding: " + JSON.stringify(this.infoForm))
-      this.addDog()
-      this.dialogAddFormVisible = false
-      location.reload()
-    },
+    getFormDog:function (id){
+      this.getDetailDog(id)
+      this.dialogFormVisible = true
 
-    onSubmitEdit: function (){
-      alert("Editing : " + JSON.stringify(this.individualData))
-      this.editDog()
-      this.dialogEditFormVisible = false
-      location.reload()
-    },
-
-    deleteDog: function (id){
-      axios.delete('/dogpage/delete/' + id)
-          .then(() =>
-          {this.tableData = this.tableData.filter((dog) => dog.id !== id)
-            location.reload()
-            alert("Deleted successfully!")})
-          .catch((error) => alert("Delete Failed, with error: " + error))
-    },
-
-    handleDelete: function(id){
-      // 二次确认删除
-      ElMessageBox.confirm('Do you want to delete？', 'Warning', {
-        type: 'warning'
-      })
-          .then(() => {
-            ElMessage.success('Delete successfully');
-            axios.delete('/api/dogpage/delete/' + id);
-          })
-          .catch((er) => {
-            console.error(er)});
-    },
-
-    addDog: function (){
-      axios.post('/api/dogpage/save', this.infoForm)
-          .then(()=> alert("Added successfully!"))
-          .catch((error) => alert("Add Failed, with error: " + error))
-    },
-
-    editDog: function (){
-      axios.put('/api/dogpage/edit/', this.individualData)
-          .then(()=> alert("Edited successfully!"))
-          .catch((error) => alert("Edit Failed, with error: " + error))
     },
 
     getDetailDog: function (id){
@@ -295,50 +121,11 @@ export default{
           {this.individualData = result.data.data})
     },
 
-    getFormDog: function (id){
-      this.getDetailDog(id)
-      this.setVisibleDialog()
-    },
-
-    getEditForm: function (id){
-      this.getDetailDog(id)
-      this.setVisibleEditDialog()
-    },
-
-    setVisibleDialog : function (){
-      this.dialogFormVisible = true
-    },
-
-    setVisibleEditDialog : function (){
-      this.dialogEditFormVisible = true
-    },
-
-    setVisibleAddDialog: function (){
-      this.dialogAddFormVisible = true
-    },
-
-    handleSizeChange:function (val){
-      this.pageSize = val
-      this.currentPage = 1;
-      this.fetchDogs()
-    },
     handleCurrentChange:function (val){
       this.currentPage=val
       this.fetchDogs()
     },
 
-    transformEntryDate:function (originalData){
-      const transofmedData = {...originalData}
-      if (transofmedData.entryDate){
-        const [entryStartDate, entryEndDate] = transofmedData.entryDate;
-
-        transofmedData.entryStartDate = entryStartDate
-        transofmedData.entryEndDate = entryEndDate
-        delete transofmedData.entryDate
-      }
-
-      return transofmedData
-    },
     transofmDateFormat: function (inputDate, showTime=0) {
 
 
@@ -364,28 +151,18 @@ export default{
       return `${formattedDate}  ${formattedTime}`;
     },
 
-    // upload Img
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-
     fetchDogs:function (){
-      const {id, gender, adoptStatus} = this.searchForm
+      const {adoptStatus} = this.searchForm
       const params={
         page: this.currentPage,
         pageSize:this.pageSize,
-        id,
-        gender,
         adoptStatus
       };
 
       axios.get('/api/dogpage', {params:params})
           .then((result) => {
             this.tableData = result.data.data.rows;
-            this.total = result.data.data.total
+            this.totalItems = result.data.data.total
             for (let i = 0; i < this.total; i++) {
               this.tableData[i].entryDate = this.transofmDateFormat(this.tableData[i].entryDate);
               this.tableData[i].lastVaccineDate = this.transofmDateFormat(this.tableData[i].lastVaccineDate);
@@ -404,114 +181,6 @@ export default{
   }
 }
 </script>
-
-<!--<script setup lang="ts" name="basetable">-->
-<!--import { ref, reactive } from 'vue';-->
-<!--import { ElMessage, ElMessageBox } from 'element-plus';-->
-<!--import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';-->
-<!--import {fetchDogData} from "../api/index";-->
-<!--import axios from "axios";-->
-
-<!--interface TableItem{-->
-<!--  id: number;-->
-<!--  name: string;-->
-<!--  age: number;-->
-<!--  imgURL: string;-->
-<!--  species: string;-->
-<!--  intro:string;-->
-<!--  gender:string;-->
-<!--  lastFeedTime:string;-->
-<!--  entryDate:string;-->
-<!--  lastUpdateTime:string;-->
-<!--  adoptStatus:string;-->
-<!--  medicalStatus:string;-->
-<!--  medicalHistory:string;-->
-<!--  adoptedDate:string;-->
-<!--  lastVaccineDate:string;-->
-<!--}-->
-<!--let pageSize = 5;-->
-<!--let currentPage = 1;-->
-<!--const tableData = ref<TableItem[]>([]);-->
-<!--const getData = () => {-->
-<!--  const params = {-->
-<!--    page: currentPage,-->
-<!--    pageSize: pageSize-->
-<!--  }-->
-<!--  axios.get('/api/dogpage',{params:params})-->
-<!--      .then((result) => {-->
-<!--        tableData.value = result.data.data.rows;-->
-<!--        pageTotal.value = result.data.data.total;-->
-<!--      })-->
-<!--};-->
-<!--getData();-->
-<!--const handleSizeChange = (val: number) => {-->
-<!--  pageSize = val-->
-<!--  currentPage = 1;-->
-<!--  getData()-->
-<!--};-->
-<!--const handleCurrentChange =  (val: number) => {-->
-<!--  currentPage=val-->
-<!--  getData()-->
-<!--};-->
-<!--// const query = reactive({-->
-<!--// 	address: '',-->
-<!--// 	name: '',-->
-<!--// 	pageIndex: 1,-->
-<!--// 	pageSize: 10-->
-<!--// });-->
-
-<!--const pageTotal = ref(0);-->
-<!--// 获取表格数据-->
-
-
-
-<!--// // 查询操作-->
-<!--// const handleSearch = () => {-->
-<!--// 	query.pageIndex = 1;-->
-<!--// 	getData();-->
-<!--// };-->
-<!--// // 分页导航-->
-<!--// const handlePageChange = (val: number) => {-->
-<!--// 	query.pageIndex = val;-->
-<!--// 	getData();-->
-<!--// };-->
-<!--//-->
-<!--// // 删除操作-->
-<!--const handleDelete = (index: number) => {-->
-<!--	// 二次确认删除-->
-<!--	ElMessageBox.confirm('Do you want to delete？', 'Warning', {-->
-<!--		type: 'warning'-->
-<!--	})-->
-<!--		.then(() => {-->
-<!--			ElMessage.success('Delete successfully');-->
-<!--			axios.delete('/api/dogpage/' + index);-->
-<!--		})-->
-<!--		.catch(() => {});-->
-<!--};-->
-
-
-<!--//-->
-<!--// // 表格编辑时弹窗和保存-->
-<!--// const editVisible = ref(false);-->
-<!--// let form = reactive({-->
-<!--// 	name: '',-->
-<!--// 	address: ''-->
-<!--// });-->
-<!--// let idx: number = -1;-->
-<!--// const handleEdit = (index: number, row: any) => {-->
-<!--// 	idx = index;-->
-<!--// 	form.name = row.name;-->
-<!--// 	form.address = row.address;-->
-<!--// 	editVisible.value = true;-->
-<!--// };-->
-<!--// const saveEdit = () => {-->
-<!--// 	editVisible.value = false;-->
-<!--// 	ElMessage.success(`修改第 ${idx + 1} 行成功`);-->
-<!--// 	tableData.value[idx].name = form.name;-->
-<!--// 	tableData.value[idx].address = form.address;-->
-<!--// };-->
-
-<!--</script>-->
 
 <style scoped>
 .handle-box {
@@ -540,5 +209,99 @@ export default{
 	margin: auto;
 	width: 40px;
 	height: 40px;
+}
+
+.el-row {
+  margin-bottom: 20px;
+}
+
+.grid-content {
+  display: flex;
+  align-items: center;
+  height: 100px;
+}
+
+.grid-cont-right {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+}
+
+.grid-num {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.grid-con-icon {
+  font-size: 50px;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  color: #fff;
+}
+
+.grid-con-1 .grid-con-icon {
+  background: rgb(45, 140, 240);
+}
+
+.grid-con-1 .grid-num {
+  color: rgb(45, 140, 240);
+}
+
+.grid-con-2 .grid-con-icon {
+  background: rgb(100, 213, 114);
+}
+
+.grid-con-2 .grid-num {
+  color: rgb(100, 213, 114);
+}
+
+.grid-con-3 .grid-con-icon {
+  background: rgb(242, 94, 67);
+}
+
+.grid-con-3 .grid-num {
+  color: rgb(242, 94, 67);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.user-info-cont {
+  padding-left: 50px;
+  flex: 1;
+  font-size: 14px;
+  color: #999;
+}
+
+.user-info-cont div:first-child {
+  font-size: 30px;
+  color: #222;
+}
+
+.user-info-list {
+  font-size: 14px;
+  color: #999;
+  line-height: 25px;
+}
+
+.user-info-list span {
+  margin-left: 70px;
+}
+
+.mgb20 {
+  margin-bottom: 20px;
+}
+
+.label-bold {
+  font-weight: bold;
+  color: #333;
 }
 </style>

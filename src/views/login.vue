@@ -40,7 +40,7 @@ import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import { Lock, User } from '@element-plus/icons-vue';
 import axios from "axios";
-import messageStore from "../store/messageStore";
+// import messageStore from "../store/messageStore";
 
 interface LoginInfo {
 	username: string;
@@ -57,21 +57,13 @@ interface info {
   phoneNumber: string;
   address: string;
   postCode: string;
-  role: string;
-  dateOfBirth: Date;
+  potentialAdopter: boolean;
+  registerDate: Date;
   gender: string;
-  entryDate: Date;
-  salary: number;
-  emergency_Contact: string;
   avatar: string;
-  contractStartDate: Date;
-  contractEndDate: Date;
   username: string;
   password: string;
-  contractImg: string;
-  identityPhoto: string;
-  identification: string;
-  lastUpdateTime: Date;
+
 
 }
 
@@ -99,7 +91,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   formEl.validate(async (valid: boolean) => {
     if (valid) {
       try {
-        const response = await axios.post("/api/login", {
+        const response = await axios.post("/api/loginCustomer", {
           username: param.username,
           password: param.password
         });
@@ -108,23 +100,31 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           localStorage.setItem('ms_token', response.data.data);
           localStorage.setItem('ms_username', param.username);
 
-          axios.get("/api/staffpage", {params:param}).then((res) =>{
+          axios.get("/api/customer", {params:param}).then((res) =>{
             const staffInfo: info[] = res.data.data.rows;
-            const keys = permiss.defaultList[staffInfo[0].role == 'admin' ? 'admin' : 'user'];
+            const keys = permiss.defaultList[staffInfo[0].potentialAdopter? 'admin' : 'user'];
 
                 permiss.handleSet(keys);
+                const full_name = staffInfo[0].firstName + " " + staffInfo[0].lastName;
+                console.log("full name: {}",full_name);
+                localStorage.setItem('full_name', (full_name));
                 localStorage.setItem('ms_keys', JSON.stringify(keys));
-                localStorage.setItem('ms_role', JSON.stringify(staffInfo[0].role) == 'admin'?'Admin':'Staff');
+
+                console.log("potential adopter? ", staffInfo[0].potentialAdopter);
+
+                localStorage.setItem('ms_role',(staffInfo[0].potentialAdopter)?'Potential Adopter':'User');
                 localStorage.setItem('ms_age', JSON.stringify(staffInfo[0].age));
                 localStorage.setItem('ms_id', JSON.stringify(staffInfo[0].id));
+                localStorage.setItem('ms_gender', JSON.stringify(staffInfo[0].gender));
+                localStorage.setItem('ms_firstName', staffInfo[0].firstName);
                 localStorage.setItem('ms_avatar', staffInfo[0].avatar);
                 localStorage.setItem('ms_password', JSON.stringify(staffInfo[0].password));
 
                 const tokens = localStorage.getItem('ms_token');
                 console.log(localStorage.getItem('ms_token'));
-                if (tokens){
-                  messageStore.initWebSocket(tokens);
-                }
+                // if (tokens){
+                //   messageStore.initWebSocket(tokens);
+                // }
 
 
 
