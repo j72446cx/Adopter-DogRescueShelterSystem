@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrap">
     <div class="ms-login">
-      <div class="ms-title">Working Space</div>
+      <div class="ms-title">Adoption System</div>
       <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
         <el-form-item prop="username">
           <el-input v-model="param.username" placeholder="username">
@@ -23,7 +23,10 @@
           </el-input>
         </el-form-item>
         <div class="login-btn">
-          <el-button type="primary" @click="submitForm(login)">登录</el-button>
+          <el-button type="primary" @click="registerForm">Register</el-button>
+        </div>
+        <div class="login-btn">
+          <el-button type="primary" @click="submitForm(login)">Login</el-button>
         </div>
 
       </el-form>
@@ -86,6 +89,11 @@ const rules: FormRules = {
 const permiss = usePermissStore();
 const login = ref<FormInstance>();
 
+const registerForm = () => {
+  console.log("going to register page")
+  router.push('/register')
+}
+
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate(async (valid: boolean) => {
@@ -106,7 +114,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
                 permiss.handleSet(keys);
                 const full_name = staffInfo[0].firstName + " " + staffInfo[0].lastName;
-                console.log("full name: {}",full_name);
+
+
                 localStorage.setItem('full_name', (full_name));
                 localStorage.setItem('ms_keys', JSON.stringify(keys));
 
@@ -118,7 +127,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 localStorage.setItem('ms_gender', JSON.stringify(staffInfo[0].gender));
                 localStorage.setItem('ms_firstName', staffInfo[0].firstName);
                 localStorage.setItem('ms_avatar', staffInfo[0].avatar);
-                localStorage.setItem('ms_password', JSON.stringify(staffInfo[0].password));
+                localStorage.setItem('ms_password', JSON.stringify(staffInfo[0].password).slice(1,-1));
 
                 const tokens = localStorage.getItem('ms_token');
                 console.log(localStorage.getItem('ms_token'));

@@ -4,15 +4,15 @@
 		<el-tabs>
 			<el-tab-pane :label="`Received (${allMessages.length})`" name="first">
 
-				<el-table :data="allMessages" :show-header="false" style="width: 100%">
-					<el-table-column width="300">
+				<el-table :data="allMessages" :show-header="true" style="width: 100%">
+					<el-table-column width="300" label="Title">
 						<template #default="scope">
 <!--              <el-link @click="this.toggleRead(scope.row.messageId)" class="large-bold-text">{{truncateText(scope.row.title, 69)}}</el-link>-->
               <el-link @click="this.openMessageDrawer(scope.row)" class="large-bold-text">{{truncateText(scope.row.title, 69)}}</el-link>
 						</template>
 					</el-table-column>
 
-          <el-table-column width="450">
+          <el-table-column width="450" label="Content">
             <template #default="scope">
               <div class="truncate-text">
                 <el-link @click="this.openMessageDrawer(scope.row)">{{truncateText(scope.row.body, 69)}}</el-link>
@@ -22,7 +22,7 @@
           </el-table-column>
 
           <el-table-column></el-table-column>
-          <el-table-column width="90">
+          <el-table-column width="120" label="Date">
             <template #default="scope">
               <span>{{processDate(scope.row.date)}}</span>
 
@@ -54,7 +54,7 @@
         <h3>{{ selectedMessage.title }}</h3>
         <el-divider></el-divider>
         <br>
-        <p>{{ selectedMessage.body }}</p>
+        <p style="white-space: pre-wrap;">{{ selectedMessage.body }}</p>
 
       </div>
     </el-drawer>

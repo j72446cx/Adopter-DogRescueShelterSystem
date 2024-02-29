@@ -19,11 +19,11 @@
           <span class="btn-bell-badge" v-if="messageStore.state.hasNewMessage"></span>
         </div>
 				<!-- 用户头像 -->
-				<el-avatar class="user-avator" :size="30" :src="imgurl" />
+				<el-avatar class="user-avator" :size="30" :src="this.avatar" />
 				<!-- 用户名下拉菜单 -->
 				<el-dropdown class="user-name" trigger="click" @command="handleCommand">
 					<span class="el-dropdown-link">
-						{{ username }}
+						{{ firstname }}
 						<el-icon class="el-icon--right">
 							<arrow-down />
 						</el-icon>
@@ -50,6 +50,8 @@ import imgurl from '../assets/img/img.jpg';
 import messageStore from "../store/messageStore";
 
 const username: string | null = localStorage.getItem('ms_username');
+const firstname: string | null = localStorage.getItem('ms_firstName');
+const avatar: string| null = localStorage.getItem('ms_avatar');
 const message: number = 2;
 
 const sidebar = useSidebarStore();

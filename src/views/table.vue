@@ -29,8 +29,9 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="Detailed Dog Information" v-model="this.dialogFormVisible">
-      <el-form ref="form" :model="individualData" label-width="150px">
+    <el-dialog v-model="this.dialogFormVisible">
+
+      <el-form ref="form" :model="individualData" label-width="150px" v-if="step===0">
 
         <el-form-item label="ID: " class="label-bold">
           <span>{{individualData.id}}</span>
@@ -61,23 +62,27 @@
           <span>{{individualData.medicalHistory}}</span>
         </el-form-item>
 
-        <el-form-item label="Entry Date: " class="label-bold">
-          <span>{{transofmDateFormat(individualData.entryDate)}}</span>
+        <el-form-item>
+
+          <el-button type="info" @click="dialogFormVisible = false">OK</el-button>
+          <el-button type="primary" @click="apply_dog(individualData.id)">Start Application</el-button>
+
         </el-form-item>
 
-        <el-form-item label="Last Vaccine Date: " class="label-bold">
-          <span>{{transofmDateFormat(individualData.lastVaccineDate)}}</span>
-        </el-form-item>
 
-        <el-form-item label="Adopted Date: " class="label-bold">
-          <span>{{transofmDateFormat(individualData.adoptedDate)}}</span>
+      </el-form>
+
+
+      <el-form title="Application form" :model="application_form" label-width="280px" v-if="step===1">
+
+        <el-form-item label="Why do you want to apply for the dog?">
+          <el-input type="textarea" v-model="application_form.reason"></el-input>
         </el-form-item>
-        <el-form-item label="Lastest Update: " class="label-bold">
-          <span>{{transofmDateFormat(individualData.lastUpdateTime, 1)}}</span>
-        </el-form-item>
+        <br><br>
 
         <el-form-item>
-          <el-button type="primary" @click="dialogFormVisible = false">OK</el-button>
+        <el-button type="info" @click="step--">Back</el-button>
+        <el-button type="success">Submit</el-button>
         </el-form-item>
 
       </el-form>
@@ -104,7 +109,15 @@ export default{
         adoptStatus: "Available"
       },
       totalItems : 0,
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      step: 0,
+      application_form: {
+        reason: '',
+        dog_id: '',
+        adopter_id: localStorage.getItem("ms_id"),
+        status: 'Pending'
+      },
+      temp_dog_id: ''
     }
   },
   methods: {
@@ -171,6 +184,13 @@ export default{
             }
           })
           .catch((error) => console.error('Error when fetching data: ', error))
+    },
+
+    apply_dog(dog_id){
+
+      this.step = 1;
+      this.temp_dog_id = dog_id;
+
     }
   },
   mounted() {
