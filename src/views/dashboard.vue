@@ -69,7 +69,7 @@
 
 
 
-				<el-card shadow="hover" style="height: 403px" v-if="role === 'Potential Adopter'">
+				<el-card shadow="hover" style="height: 403px" v-if="role === 'Potential Adopter'" v-loading="isloadingTable">
 					<template #header>
 						<div class="clearfix">
 							<span>Application Tracking</span>
@@ -100,7 +100,7 @@
             <el-table-column>
                 <template v-slot="scope">
                   <el-button type="info" round v-if="scope.row.status === 'Rejected'" @click="reject_reason(scope.row.id)">See Reject Reason</el-button>
-                  <el-button type="primary" round v-else-if="scope.row.interview_date === null" @click="toggleInterview(scope.row.id)">Make Schedule</el-button>
+                  <el-button type="primary" round v-else-if="scope.row.interview_date === null && scope.row.status !== 'Pending' && scope.row.status !== 'Reviewing'" @click="toggleInterview(scope.row.id)">Make Schedule</el-button>
                   <el-button round v-else-if="scope.row.status !== 'Adopted'" @click="instruction_dialog_visible = true">What's next?</el-button>
                 </template>
             </el-table-column>
@@ -234,7 +234,7 @@
 </template>
 <script>
 
-import axios from "axios";
+import service from "../utils/request.ts";
 
 import router from "../router/index.ts";
 import messageStore from "../store/messageStore.ts";
@@ -273,26 +273,31 @@ export default {
       family_notes: '',
       residence_notes: '',
       personal_notes: '',
-      overall_notes: ''
+      overall_notes: '',
+
+      isloadingTable: false
 
     }
   },
 
   methods: {
     fetchApplication:function (){
+      this.isloadingTable = true;
       const params={
         page: this.currentPage,
         pageSize:this.pageSize,
         adopter_id : localStorage.getItem('ms_id')
       };
 
-      axios.get('/api/adopter/application/adopter', {params:params})
+      service.get('/api/adopter/application/adopter', {params:params})
           .then((result) => {
             this.application = result.data.data.rows;
             this.applicationInProgess = this.application.filter(a => a.status !== 'Rejected').filter(b => b.status !== 'Adopted').length;
 
 
-          })
+          }).then(() => setTimeout(() => {
+            this.isloadingTable = false;
+      }, 1000))
           .catch((error) => console.error('Error when fetching data: ', error))
     },
 
@@ -357,7 +362,7 @@ export default {
         interview_date: moment(this.decided_interview_date).format('YYYY-MM-DDTHH:mm:ss')
       }
       console.log("id: ", this.temp_id + "interview_date: ", this.decided_interview_date);
-      axios.put("api/adopter/application/editForm", param).then((res) =>
+      service.put("api/adopter/application/editForm", param).then((res) =>
           {
             if (res.data.msg === "success"){
               console.log("Interview date submit successfully");
@@ -410,11 +415,11 @@ export default {
     },
 
     async reject_reason(id){
-      const res =  await axios.get("api/adopter/application/"+id);
+      const res =  await service.get("api/adopter/application/"+id);
 
       this.rejectReason = res.data.data.reject_reason;
 
-      const result = await axios.get("api/reviewing", {params: {application_id: id}});
+      const result = await service.get("api/reviewing", {params: {application_id: id}});
 
       this.customer_notes = result.data.data[0].customer_info_notes;
       this.family_notes = result.data.data[0].family_member_notes;

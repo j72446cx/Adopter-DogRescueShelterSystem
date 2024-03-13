@@ -165,7 +165,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import service from "../utils/request.ts";
 
 export default {
   data(){
@@ -208,19 +208,19 @@ export default {
         feeding_time_end : this.dateFormatEnd
       }
 
-      axios.get('/api/interaction/getMedication', {params:params1})
+      service.get('/api/interaction/getMedication', {params:params1})
           .then((res) => {
             this.todoList.medicationInfo = res.data.data.rows;
       }).catch(()=>{
         console.error("Fetch medication info failed")});
-      axios.get('/api/interaction/getGrooming', {params:params2})
+      service.get('/api/interaction/getGrooming', {params:params2})
           .then((res) => {this.todoList.groomingInfo = res.data.data.rows;}).catch(()=>{
         console.error("Error fetching grooming info")});
-      axios.get('/api/interaction/getExercise', {params:params3})
+      service.get('/api/interaction/getExercise', {params:params3})
           .then((res) => {this.todoList.exerciseInfo = res.data.data.rows;}).catch(()=>{
         console.error("Error fetching exercise info")
       });
-      axios.get('/api/interaction/getFeed', {params:params4})
+      service.get('/api/interaction/getFeed', {params:params4})
           .then((res) => {
             this.todoList.feedingInfo = res.data.data.rows;
           }

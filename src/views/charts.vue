@@ -334,7 +334,7 @@
 
 <script>
 
-import axios from "axios";
+import service from "../utils/request.ts";
 import router from "../router/index.ts";
 
 export default {
@@ -374,6 +374,7 @@ export default {
       propertyOwnerShip: '',
       petCare: '',
       referencePerson: '',
+      pdfURL: '',
 
 
 
@@ -497,12 +498,12 @@ export default {
 
     onFinish: function (){
       console.log(JSON.stringify(this.infoForm));
-      axios.post('api/adopter/save', this.infoForm).then((res) =>
+      service.post('api/adopter/save', this.infoForm).then((res) =>
           {
             if (res.data.msg === 'success'){
               this.$message(
                   {
-                    message : "Form submit successfully",
+                    message : "Form submit successfully, please re-login",
                     type: 'success'
 
                   }
@@ -516,6 +517,8 @@ export default {
             }
           }
       )
+
+          .then(() => router.push('/login'))
           .catch(() =>{
         this.$message.error("Error when submitting form, please contact us and report this error!")
       })

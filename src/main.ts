@@ -10,6 +10,7 @@ import locale from 'element-plus/lib/locale/lang/en'
 import element from 'element-plus'
 import messageStore from "./store/messageStore";
 import ElementPlus from 'element-plus'
+import service from "./utils/request";
 
 const app = createApp(App);
 app.use(createPinia());

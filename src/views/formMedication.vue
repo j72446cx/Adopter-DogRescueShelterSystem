@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import service from "../utils/request.ts";
 
 export default {
 
@@ -86,7 +86,7 @@ export default {
       this.addGrooming()
     },
     addGrooming: function (){
-      axios.post('/api/interaction/medication', this.infoForm)
+      service.post('/api/interaction/medication', this.infoForm)
           .then(()=> alert("Added successfully!"))
           .then(()=> location.reload())
           .catch((error) => alert("Add Failed, with error: " + error))

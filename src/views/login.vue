@@ -42,7 +42,7 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import { Lock, User } from '@element-plus/icons-vue';
-import axios from "axios";
+import service from "../utils/request";
 // import messageStore from "../store/messageStore";
 
 interface LoginInfo {
@@ -99,7 +99,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   formEl.validate(async (valid: boolean) => {
     if (valid) {
       try {
-        const response = await axios.post("/api/loginCustomer", {
+        const response = await service.post("/api/loginCustomer", {
           username: param.username,
           password: param.password
         });
@@ -108,7 +108,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           localStorage.setItem('ms_token', response.data.data);
           localStorage.setItem('ms_username', param.username);
 
-          axios.get("/api/customer", {params:param}).then((res) =>{
+          service.get("/api/customer", {params:param}).then((res) =>{
             const staffInfo: info[] = res.data.data.rows;
             const keys = permiss.defaultList[staffInfo[0].potentialAdopter? 'admin' : 'user'];
 

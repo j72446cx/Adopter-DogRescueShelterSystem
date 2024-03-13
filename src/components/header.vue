@@ -30,10 +30,7 @@
 					</span>
 					<template #dropdown>
 						<el-dropdown-menu>
-							<a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
-								<el-dropdown-item>Github repo</el-dropdown-item>
-							</a>
-							<el-dropdown-item command="user">Personal Information</el-dropdown-item>
+							<el-dropdown-item command="user">Personal Center</el-dropdown-item>
 							<el-dropdown-item divided command="loginout">Logout</el-dropdown-item>
 						</el-dropdown-menu>
 					</template>

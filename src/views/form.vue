@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import service from "../utils/request.ts";
 
 export default {
   data(){
@@ -86,7 +86,7 @@ export default {
       this.dialogAddFormVisible = false
     },
     addDog: function (){
-      axios.post('/api/dogpage/save', this.infoForm)
+      service.post('/api/dogpage/save', this.infoForm)
           .then(()=> alert("Added successfully!"))
           .then(()=> location.reload())
           .catch((error) => alert("Add Failed, with error: " + error))

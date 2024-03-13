@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import service from "../utils/request.ts";
 
 const groomingOptions = ['Walk', 'Jogging', 'Frisbee', 'Competition'];
 export default {
@@ -82,7 +82,7 @@ export default {
       this.addGrooming()
     },
     addGrooming: function (){
-      axios.post('/api/interaction/exercise', this.infoForm)
+      service.post('/api/interaction/exercise', this.infoForm)
           .then(()=> alert("Added successfully!"))
           .then(()=> location.reload())
           .catch((error) => alert("Add Failed, with error: " + error))

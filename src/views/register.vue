@@ -78,7 +78,7 @@
 
 
 
-            <el-form-item label="Avatar: " style="width: 100%">
+            <el-form-item label="Avatar: " style="width: 100%" prop="avatar">
               <el-upload
                   drag
                   action="/api/upload"
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import service from "../utils/request.ts";
 import router from "../router/index.ts";
 
 export default {
@@ -183,7 +183,7 @@ export default {
 
       this.$refs.form.validate((valid) => {
         if(valid){
-          axios.post('/api/customer/save', this.infoForm)
+          service.post('/api/customer/save', this.infoForm)
               .then(() => console.log("Saving customer"))
               .then(() => this.$message({
                 message: 'Register successfully',

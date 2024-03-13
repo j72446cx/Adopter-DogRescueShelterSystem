@@ -66,7 +66,7 @@
 
 <script>
 import messageStore from "../store/messageStore.ts";
-import axios from "axios";
+import service from "../utils/request.ts";
 
 export default {
   data(){
@@ -75,7 +75,6 @@ export default {
       read_message : messageStore.state.read_messages,
       hasNewMessage : messageStore.state.hasNewMessage,
       allMessages : messageStore.state.all_messages,
-
 
       drawer: false,
       selectedMessage: null,
@@ -113,11 +112,13 @@ export default {
   },
 
   methods:{
+
+
     openMessageDrawer(message) {
       this.selectedMessage = message;
       this.drawer = true;
 
-      axios.post("api/messages/user/read/" + message.messageId).then((res) => {
+      service.post("api/messages/user/read/" + message.messageId).then((res) => {
         if (res.data.msg !== "success"){
           console.error("Label as read failed")
         }

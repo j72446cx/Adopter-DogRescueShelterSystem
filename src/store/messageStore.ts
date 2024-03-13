@@ -1,5 +1,5 @@
 import {onUnmounted, reactive, readonly, computed} from "vue";
-import axios from "axios";
+import service from "../utils/request";
 
 interface Message {
     messageId: number;
@@ -94,7 +94,7 @@ const initWebSocket = (token:string) => {
 
 const fetchNewMessages = () => {
 
-    axios.get('/api/messages/user', {params: {receiverId: localStorage.getItem("ms_id"), page:1, pageSize: 100000}})
+    service.get('/api/messages/user', {params: {receiverId: localStorage.getItem("ms_id"), page:1, pageSize: 100000}})
         .then(response => {
             const sortedMessages = response.data.data.rows.sort((a: Message, b: Message) => new Date(b.date).getTime() - new Date(a.date).getTime());
             sortedMessages.forEach((newMessage: Message) => {

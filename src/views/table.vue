@@ -2,7 +2,7 @@
 	<div>
     <el-row :gutter="20">
       <el-col :span="8" v-for="(data, index) in tableData" :key="index">
-        <el-card shadow="hover" class="mgb20" style="height: 252px" v-if="data" @click="getFormDog(data.id)">
+        <el-card shadow="hover" class="mgb20" style="height: 252px" v-if="data" @click="getFormDog(data.id)" v-loading="isloadingTable">
           <div class="user-info">
             <el-avatar :size="100" :src="data.imgURL" />
             <div class="user-info-cont">
@@ -73,7 +73,7 @@
       </el-form>
 
 
-      <el-form title="Application form" :model="application_form" label-width="280px" v-if="step===1">
+      <el-form title="Application form" :model="application_form" label-width="280px" v-if="step===1 && this.user_role === 'Potential Adopter'">
 
         <el-form-item label="Why do you want to apply for the dog?">
           <el-input type="textarea" v-model="application_form.reason"></el-input>
@@ -82,8 +82,18 @@
 
         <el-form-item>
         <el-button type="info" @click="step--">Back</el-button>
-        <el-button type="success">Submit</el-button>
+        <el-button type="success" @click="onSubmitApply" v-loading.fullscreen.lock="isloadingSubmit" element-loading-text="Loading..." element-loading-background="rgba(0, 0, 0, 0.8)" >Submit</el-button>
         </el-form-item>
+
+      </el-form>
+
+      <el-form title="Application form" v-if="step === 1 && this.user_role !== 'Potential Adopter'">
+        <span>Want to adopt dog? Let's first register to become a potential adopter!</span>
+        <br>
+        <el-link style="color: #2d8cf0" @click="pushToPotentialForm"> Click here to start the form now.</el-link>
+        <br><br>
+
+        <el-button type="info" @click="step--">Back</el-button>
 
       </el-form>
 
@@ -93,8 +103,9 @@
 
 
 <script>
-import axios from 'axios'
+import service from "../utils/request.ts";
 import {ElMessage, ElMessageBox} from "element-plus";
+import router from "../router/index.ts";
 
 export default{
 
@@ -117,7 +128,12 @@ export default{
         adopter_id: localStorage.getItem("ms_id"),
         status: 'Pending'
       },
-      temp_dog_id: ''
+      temp_dog_id: '',
+
+      user_role: localStorage.getItem('ms_role'),
+
+      isloadingSubmit: false,
+      isloadingTable: false
     }
   },
   methods: {
@@ -129,7 +145,7 @@ export default{
     },
 
     getDetailDog: function (id){
-      axios.get('/api/dogpage/'+id)
+      service.get('/api/dogpage/'+id)
           .then((result) =>
           {this.individualData = result.data.data})
     },
@@ -165,6 +181,7 @@ export default{
     },
 
     fetchDogs:function (){
+      this.isloadingTable = true;
       const {adoptStatus} = this.searchForm
       const params={
         page: this.currentPage,
@@ -172,17 +189,22 @@ export default{
         adoptStatus
       };
 
-      axios.get('/api/dogpage', {params:params})
+      service.get('/api/dogpage', {params:params})
           .then((result) => {
             this.tableData = result.data.data.rows;
             this.totalItems = result.data.data.total
-            for (let i = 0; i < this.total; i++) {
-              this.tableData[i].entryDate = this.transofmDateFormat(this.tableData[i].entryDate);
-              this.tableData[i].lastVaccineDate = this.transofmDateFormat(this.tableData[i].lastVaccineDate);
-              this.tableData[i].adoptedDate = this.transofmDateFormat(this.tableData[i].adoptedDate);
-              this.tableData[i].lastUpdateTime = this.transofmDateFormat(this.tableData[i].lastUpdateTime, 1);
-            }
-          })
+          }).then(() => {
+            service.get('api/adopter/application/adopter', {params: {page: 1, pageSize: 100000, adopter_id: localStorage.getItem('ms_id')}})
+        .then((res) => {
+          const dog_in_process = res.data.data.rows.map(item => item.dog_id);
+          console.log("Dog in process: ", dog_in_process);
+          this.tableData = this.tableData.filter(item => !dog_in_process.includes(item.id));
+
+        })
+
+      }).then(() => setTimeout(() => {
+        this.isloadingTable = false;
+      }, 1000))
           .catch((error) => console.error('Error when fetching data: ', error))
     },
 
@@ -190,6 +212,33 @@ export default{
 
       this.step = 1;
       this.temp_dog_id = dog_id;
+    },
+
+    pushToPotentialForm : function (){
+      router.push({name: 'basecharts'})
+    },
+
+    onSubmitApply(){
+
+      this.isloadingSubmit = true;
+
+      this.application_form.dog_id = this.temp_dog_id;
+      service.post("api/adopter/application/postForm", this.application_form).then((res) => {
+        if (res.data.msg === "success"){
+          this.$message({
+            type:'success',
+            message: 'Submit successfully, you can track the application in the dashboard page.'
+          })
+        }
+      }).then(() => {
+        this.dialogFormVisible = false;
+        this.isloadingSubmit = false;
+        this.fetchDogs();
+      })
+          .catch((err) => {
+        console.log("Error when submitting form: ", err);
+        this.isloadingSubmit = false;
+      })
 
     }
   },

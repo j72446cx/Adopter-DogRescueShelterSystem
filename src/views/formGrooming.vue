@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import service from "../utils/request.ts";
 
 const groomingOptions = ['Hair cutting', 'Nail cutting', 'Ear/Eye Cleaning', 'Tartar cleaning', 'Bath'];
 export default {
@@ -71,7 +71,7 @@ export default {
       this.addGrooming()
     },
     addGrooming: function (){
-      axios.post('/api/interaction/grooming', this.infoForm)
+      service.post('/api/interaction/grooming', this.infoForm)
           .then(()=> alert("Added successfully!"))
           .then(()=> location.reload())
           .catch((error) => alert("Add Failed, with error: " + error))
